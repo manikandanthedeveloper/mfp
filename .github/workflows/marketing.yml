@@ -23,18 +23,19 @@ jobs:
             - run: npm ci
             - run: npm run build
               env:
-                  PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
+                  PRODUCTION_DOMAIN: ${{ secrets.AWS_S3_BUCKET_NAME }}
 
-            - name: Configure AWS Credentials
-              uses: aws-actions/configure-aws-credentials@v4
-              with:
-                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: us-east-1
+            # Uncomment these steps after configuring AWS credentials in GitHub Secrets
+            # - name: Configure AWS Credentials
+            #   uses: aws-actions/configure-aws-credentials@v4
+            #   with:
+            #       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            #       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            #       aws-region: us-east-1
 
-            - name: Deploy to S3
-              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/latest --delete
+            # - name: Deploy to S3
+            #   run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/latest --delete
 
-            - name: Invalidate CloudFront
-              run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/marketing/latest/*"
-              continue-on-error: true
+            # - name: Invalidate CloudFront
+            #   run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID }} --paths "/marketing/latest/*"
+            #   continue-on-error: true
