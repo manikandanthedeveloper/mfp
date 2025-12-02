@@ -62,6 +62,8 @@ jobs:
             # 6. Deploy build artifacts to S3
             - name: Deploy to S3
               run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest --delete
-            - name: Invalidate CloudFront Cache
-              run: |
-                  aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
+            # Uncomment when CloudFront permissions are added to IAM user
+            # - name: Invalidate CloudFront Cache
+            #   run: |
+            #       aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
