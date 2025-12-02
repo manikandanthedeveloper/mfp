@@ -1,25 +1,43 @@
-name: deploy-container
+name: Deploy to S3 & CloudFront
+
 on:
     push:
-        branches:
-            - master
-        paths:
-            - "packages/container/**"
-
-defaults:
-    run:
-        working-directory: packages/container
+        branches: [main] # or your branch
 
 jobs:
-    build:
+    deploy:
         runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v2
-            - run: npm install
-            - run: npm run build
 
-            - uses: chrislennon/action-aws-cli@v1.1
-            - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest
-              env:
-                  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-                  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Set up Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+
+            - name: Install deps & build
+              run: |
+                  npm ci
+                  npm run build   # or npm run build:prod etc.
+
+            # 🔐 Use the secrets you created in GitHub:
+            # AWS_ACCESS_KEY_ID / AWS_SECRET_ACCESS_KEY / (optional) AWS_REGION
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ap-south-1 # change to your region
+
+            - name: Deploy build to S3
+              run: |
+                  aws s3 sync ./build s3://mfp-dashboard-md --delete
+                  # or ./dist or ./out depending on your framework
+
+            - name: Invalidate CloudFront cache
+              run: |
+                  aws cloudfront create-invalidation \
+                    --distribution-id YOUR_DISTRIBUTION_ID \
+                    --paths "/*"
