@@ -1,8 +1,8 @@
-name: Deploy to S3 & CloudFront
+name: Deploy to AWS
 
 on:
     push:
-        branches: master # or your branch
+        branches: master # ⬅ your branch here
 
 jobs:
     deploy:
@@ -17,29 +17,30 @@ jobs:
               with:
                   node-version: 20
 
-            - name: Install deps
+            - name: Install dependencies
               run: npm ci
 
             - name: Build app
-              run: npm run build # or your build command
+              run: npm run build # ⬅ or your build command
 
-            # ❌ DO NOT use chrislennon/action-aws-cli here
-            # ❌ Remove any "Install AWS CLI" step using that action
+            # 🔴 DO NOT INSTALL AWS CLI WITH chrislennon/action-aws-cli
+            # ❌ REMOVE the old step completely
 
             - name: Configure AWS credentials
               uses: aws-actions/configure-aws-credentials@v4
               with:
                   aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-                  aws-region: ap-south-1 # change if needed
+                  aws-region: ap-south-1 # ⬅ change if needed
 
             - name: Deploy build to S3
               run: |
                   aws s3 sync ./build s3://mfp-dashboard-md --delete
-                  # change ./build to dist/out/etc. if your folder name is different
+                  # ⬅ change ./build to dist/out if your build folder is different
 
             - name: Invalidate CloudFront cache
               run: |
                   aws cloudfront create-invalidation \
                     --distribution-id YOUR_DISTRIBUTION_ID \
                     --paths "/*"
+                  # ⬅ put your real CloudFront distribution id
