@@ -18,7 +18,7 @@ const MarketingApp = () => {
 		loadMarketing();
 	}, []);
 
-	return <div ref={ref} />;
+	return <div ref={ref} style={{ marginTop: "30px" }} />;
 };
 
 export default MarketingApp;
