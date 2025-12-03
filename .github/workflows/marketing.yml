@@ -65,10 +65,12 @@ jobs:
                     --cache-control "public,max-age=31536000,immutable" \
                     --exclude "*.html" \
                     --exclude "remoteEntry.js"
+                  aws s3 cp dist/remoteEntry.js s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/remoteEntry.js \
+                    --cache-control "public,max-age=0,must-revalidate" \
+                    --content-type "application/javascript"
                   aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/ \
                     --exclude "*" \
                     --include "*.html" \
-                    --include "remoteEntry.js" \
                     --cache-control "public,max-age=0,must-revalidate" \
                     --content-type "text/html"
 
