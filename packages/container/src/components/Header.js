@@ -28,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
 	},
 	link: {
 		margin: theme.spacing(1, 1.5),
+		marginTop: "0 !important",
+		marginBottom: "0 !important",
 	},
 	heroContent: {
 		padding: theme.spacing(8, 0, 6),
