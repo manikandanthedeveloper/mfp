@@ -50,6 +50,19 @@ jobs:
                   PRODUCTION_DOMAIN_MARKETING: ${{ secrets.PRODUCTION_DOMAIN_MARKETING }}
               run: npm run build
 
+            # 4.5. Verify remoteEntry.js exists
+            - name: Verify build output
+              run: |
+                  echo "Checking dist folder contents:"
+                  ls -la dist/
+                  if [ -f "dist/remoteEntry.js" ]; then
+                    echo "✓ remoteEntry.js found"
+                    ls -lh dist/remoteEntry.js
+                  else
+                    echo "✗ remoteEntry.js NOT found!"
+                    exit 1
+                  fi
+
             # 5. Configure AWS credentials (uses IAM keys & region)
             - name: Configure AWS Credentials
               uses: aws-actions/configure-aws-credentials@v4
@@ -73,6 +86,12 @@ jobs:
                     --include "*.html" \
                     --cache-control "public,max-age=0,must-revalidate" \
                     --content-type "text/html"
+
+            # 7. Verify deployment
+            - name: Verify remoteEntry.js deployed
+              run: |
+                  echo "Verifying remoteEntry.js was uploaded..."
+                  aws s3 ls s3://${{ secrets.AWS_S3_BUCKET_NAME }}/marketing/remoteEntry.js
 
             # CloudFront invalidation disabled - distribution doesn't exist or ID is incorrect
             # To enable: Get correct Distribution ID from CloudFront console and update CLOUDFRONT_DISTRIBUTION_ID secret
