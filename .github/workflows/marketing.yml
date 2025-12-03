@@ -64,6 +64,6 @@ jobs:
 
             # CloudFront invalidation disabled - distribution doesn't exist or ID is incorrect
             # To enable: Get correct Distribution ID from CloudFront console and update CLOUDFRONT_DISTRIBUTION_ID secret
-            - name: Invalidate CloudFront Cache
-              run: |
-                  aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/marketing/latest/index.html" "/marketing/latest/static/*" "/marketing/latest/remote-entry.js"
+            # - name: Invalidate CloudFront Cache
+            #   run: |
+            #       aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/marketing/latest/index.html" "/marketing/latest/static/*" "/marketing/latest/remote-entry.js"
