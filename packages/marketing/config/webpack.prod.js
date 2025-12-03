@@ -10,7 +10,7 @@ const prodConfig = {
 	mode: "production",
 	output: {
 		filename: "[name].[contenthash].js",
-		publicPath: `${domain}/marketing/latest/`,
+		publicPath: `${domain}/marketing/`,
 	},
 	plugins: [
 		new webpack.DefinePlugin({
