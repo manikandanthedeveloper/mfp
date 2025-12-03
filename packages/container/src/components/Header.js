@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 	toolbar: {
 		flexWrap: "wrap",
 		justifyContent: "space-between",
+		paddingTop: 0,
+		paddingBottom: 0,
 	},
 	link: {
 		margin: theme.spacing(1, 1.5),
