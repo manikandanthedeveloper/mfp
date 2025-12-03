@@ -4,7 +4,6 @@ import { StylesProvider } from "@material-ui/core/styles";
 
 import Pricing from "./components/Pricing";
 import Landing from "./components/Landing";
-// Trigger rebuild
 
 const App = () => {
 	return (
