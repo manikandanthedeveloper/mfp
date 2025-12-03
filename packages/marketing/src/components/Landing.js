@@ -126,7 +126,7 @@ export default function Album() {
 								<Card className={classes.card}>
 									<CardMedia
 										className={classes.cardMedia}
-										image={`${process.env.ASSETS_HOST}/public/maksim.jpg`}
+										image={`${process.env.ASSETS_HOST}/marketing/public/maksim.jpg`}
 										title="Image title"
 									/>
 									<CardContent
