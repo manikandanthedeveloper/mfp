@@ -23,13 +23,9 @@ const useStyles = makeStyles((theme) => ({
 	toolbar: {
 		flexWrap: "wrap",
 		justifyContent: "space-between",
-		paddingTop: "0 !important",
-		paddingBottom: "0 !important",
 	},
 	link: {
 		margin: theme.spacing(1, 1.5),
-		marginTop: "0 !important",
-		marginBottom: "0 !important",
 	},
 	heroContent: {
 		padding: theme.spacing(8, 0, 6),
@@ -83,7 +79,7 @@ export default function Header({ signedIn, onSignOut }) {
 						component={RouterLink}
 						to="/"
 					>
-						My App
+						App
 					</Typography>
 					<Button
 						color="primary"
