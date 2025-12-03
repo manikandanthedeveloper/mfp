@@ -79,3 +79,4 @@ jobs:
             # - name: Invalidate CloudFront Cache
             #   run: |
             #       aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/marketing/latest/index.html" "/marketing/latest/static/*" "/marketing/latest/remote-entry.js"
+            # Updated: 2025-12-03
