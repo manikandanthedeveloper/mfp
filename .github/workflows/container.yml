@@ -59,9 +59,9 @@ jobs:
                   aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
                   aws-region: us-east-1
 
-            # 6. Deploy build artifacts to S3
+            # 6. Deploy build artifacts to S3 (root level)
             - name: Deploy to S3
-              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/latest --delete
+              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ --delete
 
             # CloudFront invalidation disabled - distribution doesn't exist or ID is incorrect
             # To enable: Get correct Distribution ID from CloudFront console and update CLOUDFRONT_DISTRIBUTION_ID secret
