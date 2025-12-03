@@ -32,22 +32,22 @@ jobs:
               run: npm ci
 
             # 3.5. Verify PRODUCTION_DOMAIN secret
-            - name: Check PRODUCTION_DOMAIN
+            - name: Check PRODUCTION_DOMAIN_MARKETING
               run: |
-                  if [ -z "$PRODUCTION_DOMAIN" ]; then
-                    echo "ERROR: PRODUCTION_DOMAIN is not set!"
+                  if [ -z "$PRODUCTION_DOMAIN_MARKETING" ]; then
+                    echo "ERROR: PRODUCTION_DOMAIN_MARKETING is not set!"
                     echo "Please add it in GitHub Settings > Secrets > Actions"
                     exit 1
                   else
-                    echo "PRODUCTION_DOMAIN is set (length: ${#PRODUCTION_DOMAIN})"
+                    echo "PRODUCTION_DOMAIN_MARKETING is set (length: ${#PRODUCTION_DOMAIN_MARKETING})"
                   fi
               env:
-                  PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
+                  PRODUCTION_DOMAIN_MARKETING: ${{ secrets.PRODUCTION_DOMAIN_MARKETING }}
 
             # 4. Build the project
             - name: Build
               env:
-                  PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
+                  PRODUCTION_DOMAIN_MARKETING: ${{ secrets.PRODUCTION_DOMAIN_MARKETING }}
               run: npm run build
 
             # 5. Configure AWS credentials (uses IAM keys & region)

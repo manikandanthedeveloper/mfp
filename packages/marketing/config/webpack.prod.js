@@ -4,7 +4,7 @@ const ModuleFederationPlugin =
 const commonConfig = require("./webpack.common.js");
 const packageJson = require("../package.json");
 const webpack = require("webpack");
-const domain = process.env.PRODUCTION_DOMAIN;
+const domain = process.env.PRODUCTION_DOMAIN_MARKETING;
 
 const prodConfig = {
 	mode: "production",
