@@ -3,28 +3,26 @@ const ModuleFederationPlugin =
 	require("webpack").container.ModuleFederationPlugin;
 const commonConfig = require("./webpack.common.js");
 const packageJson = require("../package.json");
-const domain = process.env.PRODUCTION_DOMAIN;
-
-if (!domain) {
-	throw new Error(
-		"PRODUCTION_DOMAIN environment variable is required for production builds. " +
-			"Please set it in your GitHub Secrets or pass it when building locally."
-	);
-}
+const webpack = require("webpack");
+const domain = process.env.PRODUCTION_DOMAIN_DASHBOARD;
 
 const prodConfig = {
 	mode: "production",
 	output: {
 		filename: "[name].[contenthash].js",
-		publicPath: `${domain}/`,
+		publicPath: `${domain}/dashboard/`,
 	},
 	plugins: [
+		new webpack.DefinePlugin({
+			"process.env.PRODUCTION": JSON.stringify(true),
+			__VUE_OPTIONS_API__: JSON.stringify(true),
+			__VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+		}),
 		new ModuleFederationPlugin({
-			name: "container",
-			remotes: {
-				marketing: `marketing@${domain}/marketing/remoteEntry.js`,
-				auth: `auth@${domain}/auth/remoteEntry.js`,
-				dashboard: `dashboard@${domain}/dashboard/remoteEntry.js`,
+			name: "dashboard",
+			filename: "remoteEntry.js",
+			exposes: {
+				"./DashboardApp": "./src/bootstrap",
 			},
 			shared: { ...packageJson.dependencies },
 		}),

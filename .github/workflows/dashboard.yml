@@ -1,0 +1,73 @@
+name: deploy-dashboard
+
+on:
+    push:
+        branches:
+            - master
+            - main
+
+defaults:
+    run:
+        working-directory: packages/dashboard # All `run` commands execute here
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            # 1. Checkout code
+            - uses: actions/checkout@v4 # use latest v4 instead of v2
+
+            # 2. Setup Node.js
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "16" # match your project; can be 18 or 20 if needed
+                  cache: "npm"
+                  cache-dependency-path: packages/auth/package-lock.json
+
+            # 3. Install dependencies
+            - name: Install dependencies
+              run: npm ci
+
+            # 3.5. Verify PRODUCTION_DOMAIN secret
+            - name: Check PRODUCTION_DOMAIN_DASHBOARD
+              run: |
+                  if [ -z "$PRODUCTION_DOMAIN_DASHBOARD" ]; then
+                    echo "ERROR: PRODUCTION_DOMAIN_DASHBOARD is not set!"
+                    echo "Please add it in GitHub Settings > Secrets > Actions"
+                    exit 1
+                  else
+                    echo "PRODUCTION_DOMAIN_DASHBOARD is set (length: ${#PRODUCTION_DOMAIN_DASHBOARD})"
+                  fi
+              env:
+                  PRODUCTION_DOMAIN_DASHBOARD: ${{ secrets.PRODUCTION_DOMAIN_DASHBOARD }}
+
+            # 4. Build the project
+            - name: Build
+              env:
+                  PRODUCTION_DOMAIN_DASHBOARD: ${{ secrets.PRODUCTION_DOMAIN_DASHBOARD }}
+              run: npm run build
+
+            # 5. Configure AWS credentials (uses IAM keys & region)
+            - name: Configure AWS Credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: us-east-2
+
+            # 6. Deploy build artifacts to S3
+            - name: Deploy to S3
+              run: |
+                  aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/dashboard/ --delete \
+                    --cache-control "public,max-age=31536000,immutable" \
+                    --exclude "*.html" \
+                    --exclude "remoteEntry.js"
+                  aws s3 cp dist/remoteEntry.js s3://${{ secrets.AWS_S3_BUCKET_NAME }}/dashboard/remoteEntry.js \
+                    --cache-control "public,max-age=0,must-revalidate" \
+                    --content-type "application/javascript"
+                  aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/dashboard/ \
+                    --exclude "*" \
+                    --include "*.html" \
+                    --cache-control "public,max-age=0,must-revalidate" \
+                    --content-type "text/html"
