@@ -3,27 +3,24 @@ const ModuleFederationPlugin =
 	require("webpack").container.ModuleFederationPlugin;
 const commonConfig = require("./webpack.common.js");
 const packageJson = require("../package.json");
-const domain = process.env.PRODUCTION_DOMAIN;
-
-if (!domain) {
-	throw new Error(
-		"PRODUCTION_DOMAIN environment variable is required for production builds. " +
-			"Please set it in your GitHub Secrets or pass it when building locally."
-	);
-}
+const webpack = require("webpack");
+const domain = process.env.PRODUCTION_DOMAIN_AUTH;
 
 const prodConfig = {
 	mode: "production",
 	output: {
 		filename: "[name].[contenthash].js",
-		publicPath: `${domain}/`,
+		publicPath: `${domain}/auth/`,
 	},
 	plugins: [
+		new webpack.DefinePlugin({
+			"process.env.PRODUCTION": JSON.stringify(true),
+		}),
 		new ModuleFederationPlugin({
-			name: "container",
-			remotes: {
-				marketing: `marketing@${domain}/marketing/remoteEntry.js`,
-				auth: `auth@${domain}/auth/remoteEntry.js`,
+			name: "auth",
+			filename: "remoteEntry.js",
+			exposes: {
+				"./AuthApp": "./src/bootstrap",
 			},
 			shared: { ...packageJson.dependencies },
 		}),

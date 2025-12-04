@@ -1,14 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { useHistory } from "react-router-dom";
 
-const MarketingApp = () => {
+const AuthApp = ({ onSignIn }) => {
 	const ref = useRef(null);
 	const history = useHistory();
 
 	useEffect(() => {
-		const loadMarketing = async () => {
+		const loadAuth = async () => {
 			try {
-				const { mount } = await import("marketing/MarketingApp");
+				const { mount } = await import("auth/AuthApp");
 				if (mount && ref.current) {
 					const { onParentNavigate } = await mount(ref.current, {
 						initialPath: history.location.pathname,
@@ -19,6 +19,10 @@ const MarketingApp = () => {
 								history.push(nextPathname);
 							}
 						},
+						onSignIn: () => {
+							console.log("User signed in with auth state:");
+							onSignIn();
+						},
 					});
 					history.listen(onParentNavigate);
 				}
@@ -27,10 +31,10 @@ const MarketingApp = () => {
 			}
 		};
 
-		loadMarketing();
+		loadAuth();
 	}, []);
 
 	return <div ref={ref} />;
 };
 
-export default MarketingApp;
+export default AuthApp;

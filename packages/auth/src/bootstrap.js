@@ -1,6 +1,9 @@
 import { createBrowserHistory } from "history";
 
-const mount = async (el, { onNavigate, defaultHistory, initialPath }) => {
+const mount = async (
+	el,
+	{ onSignIn, onNavigate, defaultHistory, initialPath }
+) => {
 	const ReactModule = await import("react");
 	const ReactDomModule = await import("react-dom");
 	const { createMemoryHistory } = await import("history");
@@ -17,14 +20,17 @@ const mount = async (el, { onNavigate, defaultHistory, initialPath }) => {
 		history.listen(onNavigate);
 	}
 
-	ReactDom.render(React.createElement(App, { history }), el);
+	ReactDom.render(React.createElement(App, { history, onSignIn }), el);
 
 	// Hot Module Replacement
 	if (module.hot) {
 		module.hot.accept("./App", async () => {
 			const NewAppModule = await import("./App");
 			const NewApp = NewAppModule.default || NewAppModule;
-			ReactDom.render(React.createElement(NewApp, { history }), el);
+			ReactDom.render(
+				React.createElement(NewApp, { history, onSignIn }),
+				el
+			);
 		});
 	}
 
@@ -40,7 +46,7 @@ const mount = async (el, { onNavigate, defaultHistory, initialPath }) => {
 };
 
 if (process.env.NODE_ENV === "development") {
-	const el = document.querySelector("#marketing-root");
+	const el = document.querySelector("#auth-root");
 	if (el) {
 		mount(el, { defaultHistory: createBrowserHistory() });
 	}
