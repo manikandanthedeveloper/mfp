@@ -5,8 +5,9 @@ on:
         branches:
             - master
             - main
-        paths:
-            - "packages/marketing/**" # Only run when marketing package changes
+        # Temporarily removed paths filter to debug deployment
+        # paths:
+        #     - "packages/marketing/**"
 
 defaults:
     run:
