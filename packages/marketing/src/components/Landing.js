@@ -126,7 +126,7 @@ export default function Album() {
 								<Card className={classes.card}>
 									<CardMedia
 										className={classes.cardMedia}
-										image="https://picsum.photos/200"
+										image="https://picsum.photos/280/180"
 										title="Image title"
 									/>
 									<CardContent
