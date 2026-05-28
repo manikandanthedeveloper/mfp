@@ -5,13 +5,13 @@ on:
         branches:
             - master
             - main
-        paths:
-            - "packages/container/**" # Only run when container package changes
+        # Temporarily removed paths filter to debug deployment
+        # paths:
+        #     - "packages/marketing/**"
 
 defaults:
     run:
         working-directory: packages/container # All `run` commands execute here
-
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
 
             # 6. Deploy build artifacts to S3 (root level)
             - name: Deploy to S3
-              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/ --delete
+              run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME }}/container/ --delete
 
             # CloudFront invalidation disabled - distribution doesn't exist or ID is incorrect
             # To enable: Get correct Distribution ID from CloudFront console and update CLOUDFRONT_DISTRIBUTION_ID secret
