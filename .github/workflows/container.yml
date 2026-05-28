@@ -18,13 +18,13 @@ jobs:
 
         steps:
             # 1. Checkout code
-            - uses: actions/checkout@v4 # use latest v4 instead of v2
+            - uses: actions/checkout@v5 # use latest v4 instead of v2
 
             # 2. Setup Node.js
             - name: Install Node.js
-              uses: actions/setup-node@v4
+              uses: actions/setup-node@v5
               with:
-                  node-version: "16" # match your project; can be 18 or 20 if needed
+                  node-version: "22" # match your project; can be 18 or 20 if needed
                   cache: "npm"
                   cache-dependency-path: packages/container/package-lock.json
 
